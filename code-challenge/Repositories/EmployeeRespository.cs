@@ -20,7 +20,19 @@ namespace challenge.Repositories
            
             _logger = logger;
         }
+        // Included compensation in the EmployeeRepository. This allows us easier saving of the context scope and avoids having to save employee and Compensation info separately. 
+        // This could be replaced with a unit of work, but that seems overkill for this.
+        public Compensation Add(Compensation compensation)
+        {
+            compensation.CompansationId = Guid.NewGuid().ToString();
+            _employeeContext.Compensation.Add(compensation);
+            return compensation;
+        }
+        public Compensation GetCompensationByEmployeeID(string id)
+        {
+            return _employeeContext.Compensation.Include("Employee").FirstOrDefault(e => e.EmployeeId == id);
 
+        }
         public Employee Add(Employee employee)
         {
             employee.EmployeeId = Guid.NewGuid().ToString();
@@ -30,13 +42,14 @@ namespace challenge.Repositories
 
         public Employee GetById(string id)
         {
-            
-            //for some reason this is not rreturning the employyee.DirectReports
+
+            //for some reason this is not returning the employyee.DirectReports
             //when I debug and check the results it works as expected
-            //atemting to materiallize the list to see if the issue is async thing or something else
-            //after some googling changed ToList to Include for better performance(ie we don't materialize the entire table when all we are about are the direct reports
-            var emp = _employeeContext.Employees.Include(x=>x.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
-            return emp;
+            //materialize the list so that all directReports are loaded and we don't need to call getByID them when traversing the tree
+            //There is a performace hit with this as we are loading the table all at once.
+
+            return _employeeContext.Employees.ToList().SingleOrDefault(e => e.EmployeeId == id);
+           
         }
 
         public Task SaveAsync()

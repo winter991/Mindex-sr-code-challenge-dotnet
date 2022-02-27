@@ -72,5 +72,25 @@ namespace challenge.Controllers
 
             return Ok(reportingStructure);
         }
+
+        //Since we are createing compensations off of the employeeID. create the route to be POST {id}/compensation
+        [HttpPost("{id}/Compensation", Name = "CreateCompensation")]
+        public IActionResult CreateCompensation(String id,[FromBody] API_Models.CreateCompensationRequest request)
+        {
+            _logger.LogDebug($"Received Create Compensation get request for '{id}'");
+            // check model state to make sure required fields are filled in
+            // createCompensationRequest has validation annotations
+            //we need to check them to make sure things are corrrect before callling CreateCompensation
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var comp = _employeeService.CreateCompensation(id, request);
+
+            if (comp == null)
+                return NotFound();
+
+            return Ok(comp);
+        }
     }
 }

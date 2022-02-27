@@ -20,6 +20,66 @@ namespace challenge.Services
             _logger = logger;
         }
 
+
+        public API_Models.CompensationResponse CreateCompensation (string id,CreateCompensationRequest request)
+           
+        {
+            //Assumption an employee can have only one compensation. Therefore if an employee already has a compensation we will overrite it
+            //handle error cases for if the request object is not provided or if the employee does not exist for the provided ID
+            if(request == null)
+            {
+                _logger.LogError("Create Compensation request object is null");
+                return null;
+            }
+            var employee = _employeeRepository.GetById(id);
+            if(employee == null)
+            {
+                _logger.LogError(String.Format("Could not find employee for employeeID {0}",id));
+            }
+            
+            //create new commpenation  and assign it to the emmployee. This will overrrite 
+            var compensation = new Compensation
+            {
+                Employee = employee,
+                Salary = request.Salary.Value,
+                EffectiveDate = request.EffectiveDate.Value
+            };
+
+           
+          //Compensation should now be linked to the emplloyee by employeID FK
+            _employeeRepository.Add(compensation);
+            _employeeRepository.SaveAsync().Wait();
+            //Convert thhe result to the response model and send it back
+            var result = new API_Models.CompensationResponse
+            {
+                EffectiveDate = compensation.EffectiveDate,
+                Salary = compensation.Salary,
+                Employee = compensation.Employee
+            };
+            return result;
+
+        }
+        public API_Models.CompensationResponse GetCompensationByEmployeeID (string id)
+        {
+            //et the 
+            API_Models.CompensationResponse result = null;
+            if (!String.IsNullOrEmpty(id))
+            {
+                var compensation = _employeeRepository.GetCompensationByEmployeeID(id);
+                if(compensation != null)
+                {
+                     result = new API_Models.CompensationResponse
+                    {
+                        EffectiveDate = compensation.EffectiveDate,
+                        Salary = compensation.Salary,
+                        Employee = compensation.Employee
+                    };
+                }
+            }
+
+            return result;
+
+        }
         public Employee Create(Employee employee)
         {
             if(employee != null)

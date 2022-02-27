@@ -189,7 +189,7 @@ namespace code_challenge.Tests.Integration
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.IsNull(reportingStructure);
         }
-        // tests can't find emplloyee case where no employee id is provided
+        // tests for returning number of reports for a given id
         [TestMethod]
         public void getReportingStructureShould_Return_Number_OfReports_ForGrandChildren()
         {
@@ -202,6 +202,56 @@ namespace code_challenge.Tests.Integration
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.AreEqual(4, reportingStructure?.numberOfReports);
             Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
+        }
+        // //Salary and effective date are required
+        [TestMethod]
+        public void CreateCompensation_Required_Fields()
+        {
+            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+            var requestContent =   new JsonSerialization().ToJson(new CreateCompensationRequest { });
+            // Execute
+            var getRequestTask = _httpClient.PostAsync($"api/employee/{employeeId}/compensation", new StringContent(requestContent, Encoding.UTF8, "application/json"));
+            var response = getRequestTask.Result;
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+          
+        }
+        // //basic create of compensation
+        [TestMethod]
+        public void CreateCompensation()
+        {
+            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+            var requestContent = new JsonSerialization().ToJson(new CreateCompensationRequest { Salary=500, EffectiveDate=new DateTime(2021,01,01)});
+            // Execute
+            var postRequestTask = _httpClient.PostAsync($"api/employee/{employeeId}/compensation", new StringContent(requestContent, Encoding.UTF8, "application/json"));
+            var response = postRequestTask.Result;
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var result = response.DeserializeContent<CompensationResponse>();
+            Assert.AreEqual(500, result.Salary);
+            Assert.AreEqual(new DateTime(2021, 01, 01), result.EffectiveDate);
+            Assert.AreEqual("16a596ae-edd3-4847-99fe-c4518e82c86f", result.Employee.EmployeeId);
+
+        }
+        // create and then get the compensation we created to prove it was peristed
+        [TestMethod]
+        public void GetCompensation_()
+        {
+            //create
+            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+            var requestContent = new JsonSerialization().ToJson(new CreateCompensationRequest { Salary = 500, EffectiveDate = new DateTime(2021, 01, 01) });
+            // Execute
+            var postRequestTask = _httpClient.PostAsync($"api/employee/{employeeId}/compensation", new StringContent(requestContent, Encoding.UTF8, "application/json"));
+            var response = postRequestTask.Result;
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/compensation");
+             response = postRequestTask.Result;
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var result = response.DeserializeContent<CompensationResponse>();
+
+            Assert.AreEqual(500, result.Salary);
+            Assert.AreEqual(new DateTime(2021, 01, 01), result.EffectiveDate);
+            Assert.AreEqual("16a596ae-edd3-4847-99fe-c4518e82c86f", result.Employee.EmployeeId);
+
         }
 
     }
