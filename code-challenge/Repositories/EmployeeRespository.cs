@@ -30,7 +30,7 @@ namespace challenge.Repositories
         }
         public Compensation GetCompensationByEmployeeID(string id)
         {
-            return _employeeContext.Compensation.Include("Employee").FirstOrDefault(e => e.EmployeeId == id);
+            return _employeeContext.Compensation.Include(x=>x.Employee.DirectReports).FirstOrDefault(e => e.EmployeeId == id);
 
         }
         public Employee Add(Employee employee)

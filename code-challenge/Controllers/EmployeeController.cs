@@ -92,5 +92,19 @@ namespace challenge.Controllers
 
             return Ok(comp);
         }
+
+        
+        [HttpGet("{id}/compensation", Name = "GetCompensation")]
+        public IActionResult GetCompensation(String id)
+        {
+            _logger.LogDebug($"Received getReportingStructure get request for '{id}'");
+
+            var reportingStructure = _employeeService.GetCompensationByEmployeeID(id);
+
+            if (reportingStructure == null)
+                return NotFound();
+
+            return Ok(reportingStructure);
+        }
     }
 }

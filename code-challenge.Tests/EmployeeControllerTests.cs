@@ -246,7 +246,7 @@ namespace code_challenge.Tests.Integration
             var response = postRequestTask.Result;
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/compensation");
-             response = postRequestTask.Result;
+             response = getRequestTask.Result;
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var result = response.DeserializeContent<CompensationResponse>();
 
