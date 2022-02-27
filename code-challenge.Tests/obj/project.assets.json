@@ -14366,11 +14366,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
+      "projectUniqueName": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
       "projectName": "code-challenge.Tests.Integration",
-      "projectPath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
+      "projectPath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
       "packagesPath": "C:\\Users\\rhxcr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge.Tests\\obj\\",
+      "outputPath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rhxcr\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -14386,8 +14386,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj": {
-              "projectPath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj"
+            "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj": {
+              "projectPath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj"
             }
           }
         }

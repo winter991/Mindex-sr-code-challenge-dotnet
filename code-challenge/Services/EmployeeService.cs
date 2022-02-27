@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using challenge.Models;
 using Microsoft.Extensions.Logging;
 using challenge.Repositories;
+using challenge.API_Models;
 
 namespace challenge.Services
 {
@@ -39,6 +40,32 @@ namespace challenge.Services
 
             return null;
         }
+        //
+        public ReportingStructure GetReportingStructureForEmployeeID(string id)
+        {
+            //TODO check to see how we should handle invalid IDs/ employee not found
+            if (String.IsNullOrEmpty(id))
+            {
+                return null; 
+            }
+
+            //Get employee if not found just return null
+            var employee = _employeeRepository.GetById(id);
+            if(employee == null)
+            {
+                return null;
+            }
+            //
+            int numberOfReports = GetNumberOfReports(employee.DirectReports);
+
+            return new API_Models.ReportingStructure
+            {
+                employee = employee,
+                numberOfReports = numberOfReports
+            };
+        }
+
+      
 
         public Employee Replace(Employee originalEmployee, Employee newEmployee)
         {
@@ -59,5 +86,43 @@ namespace challenge.Services
 
             return newEmployee;
         }
+
+
+        #region private methods
+        /// <summary>
+        /// Recursivly gets the number of reports for an employee by descending down it's decendants
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        private int GetNumberOfReports(IList<Employee> reports)
+        {
+
+            int reportCount=0;
+            if(reports == null)
+            {
+                return reportCount;
+            }
+            else
+            {
+                //loop over the direct reports
+                // if the direct reports do not have reports of their own we don't need to recurse and can just add to the count instead
+                foreach( var report in reports)
+                {
+                    //increment the number of reports for each direct report
+                    ++reportCount;
+                    if (report.DirectReports?.Count() > 0)
+                    {
+                        //recursively calll get number of reports for each direct report that has direct reports for where the original employee is the root
+                        reportCount += GetNumberOfReports(report.DirectReports);
+                    }
+                }
+            }
+            return reportCount;
+        }
+
+
+        #endregion
     }
 }

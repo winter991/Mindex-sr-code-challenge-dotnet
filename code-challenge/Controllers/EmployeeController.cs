@@ -57,5 +57,20 @@ namespace challenge.Controllers
 
             return Ok(newEmployee);
         }
+
+        //reporting structure is dependant of employee and not a first class object
+        // because of this the route would be {id}/reportingStructure
+        [HttpGet("{id}/reportingStructure", Name = "getReportingStructure")]
+        public IActionResult getReportingStructure(String id)
+        {
+            _logger.LogDebug($"Received getReportingStructure get request for '{id}'");
+
+            var reportingStructure = _employeeService.GetReportingStructureForEmployeeID(id);
+
+            if (reportingStructure == null)
+                return NotFound();
+
+            return Ok(reportingStructure);
+        }
     }
 }

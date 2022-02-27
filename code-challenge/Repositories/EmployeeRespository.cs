@@ -17,6 +17,7 @@ namespace challenge.Repositories
         public EmployeeRespository(ILogger<IEmployeeRepository> logger, EmployeeContext employeeContext)
         {
             _employeeContext = employeeContext;
+           
             _logger = logger;
         }
 
@@ -29,7 +30,12 @@ namespace challenge.Repositories
 
         public Employee GetById(string id)
         {
-            return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
+            //debug code
+            //for some reason this is not rreturning the employyee.DirectReports
+            //when I debug and check the results it works as expected
+            //atemting to materiallize the list to see if the issue is async thing or something else
+            var emp = _employeeContext.Employees.ToList().SingleOrDefault(e => e.EmployeeId == id);
+            return emp;
         }
 
         public Task SaveAsync()

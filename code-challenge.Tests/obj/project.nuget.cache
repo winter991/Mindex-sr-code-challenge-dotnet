@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "CZHK7DeoXvnRkQHiNqdgd3zVSpVPuVHpw5GO/P2YS36kwsSnCIqzcgSP3VDoN2HDhuqv7OUBU7jknBm4PgFxpw==",
+  "dgSpecHash": "9UzftoSbGPbOrn5hl3SI21DkNUtm4h8Z66MNc7S4DX/oHsMtUeGk82hKPM7QMxFbEpscU5B5jfEx+q6t96y+Qw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
+  "projectFilePath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge.Tests\\code-challenge.Tests.Integration.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rhxcr\\.nuget\\packages\\libuv\\1.10.0\\libuv.1.10.0.nupkg.sha512",
     "C:\\Users\\rhxcr\\.nuget\\packages\\microsoft.applicationinsights\\2.4.0\\microsoft.applicationinsights.2.4.0.nupkg.sha512",

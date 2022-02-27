@@ -13119,11 +13119,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj",
+      "projectUniqueName": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj",
       "projectName": "code-challenge",
-      "projectPath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj",
+      "projectPath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge\\code-challenge.csproj",
       "packagesPath": "C:\\Users\\rhxcr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rhxcr\\Desktop\\sr-code-challenge-dotnet\\code-challenge\\obj\\",
+      "outputPath": "C:\\Users\\rhxcr\\Documents\\GitHub\\Mindex-sr-code-challenge-dotnet\\code-challenge\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rhxcr\\AppData\\Roaming\\NuGet\\NuGet.Config",
