@@ -87,7 +87,8 @@ namespace code_challenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var employee = response.DeserializeContent<Employee>();
             Assert.AreEqual(expectedFirstName, employee.FirstName);
-            Assert.AreEqual(expectedLastName, employee.LastName);
+            Assert.AreEqual(2, employee.DirectReports.Count);
+
         }
 
         [TestMethod]

@@ -30,11 +30,12 @@ namespace challenge.Repositories
 
         public Employee GetById(string id)
         {
-            //debug code
+            
             //for some reason this is not rreturning the employyee.DirectReports
             //when I debug and check the results it works as expected
             //atemting to materiallize the list to see if the issue is async thing or something else
-            var emp = _employeeContext.Employees.ToList().SingleOrDefault(e => e.EmployeeId == id);
+            //after some googling changed ToList to Include for better performance(ie we don't materialize the entire table when all we are about are the direct reports
+            var emp = _employeeContext.Employees.Include(x=>x.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
             return emp;
         }
 
