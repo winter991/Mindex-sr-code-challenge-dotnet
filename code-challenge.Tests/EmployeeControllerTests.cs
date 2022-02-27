@@ -91,6 +91,69 @@ namespace code_challenge.Tests.Integration
 
         }
 
+        //base test to make sure we cover employees without reports
+
+        [TestMethod]
+        public void GetReportingStructureShould_Return_Employee_and_No_Reports()
+        {
+            var employeeId = "c0c2293d-16bd-4603-8e08-638a9d18b22c";
+
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var reportingStructure = response.DeserializeContent<ReportingStructure>();
+            Assert.AreEqual(0, reportingStructure?.numberOfReports);
+            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
+
+
+        }
+        // tests bases case where no employee id is provided
+        [TestMethod]
+        public void GetReportingStructureShould_Return_null()
+        {
+            string employeeId = null;
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            var reportingStructure = response.DeserializeContent<ReportingStructure>();
+            Assert.IsNull(reportingStructure);
+        }
+        // tests can't find emplloyee case where no employee id is provided
+        [TestMethod]
+        public void GetReportingStructureShould_Return_null_ID_ID_Not_Found()
+        {
+            string employeeId = "AAAA";
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            var reportingStructure = response.DeserializeContent<ReportingStructure>();
+            Assert.IsNull(reportingStructure);
+        }
+        // tests for returning number of reports for a given id
+        [TestMethod]
+        public void GetReportingStructureShould_Return_Number_OfReports_ForGrandChildren()
+        {
+            // for this test we want the context to be in a known good state. For this we are recreating the context
+            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
+            var response = getRequestTask.Result;
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var reportingStructure = response.DeserializeContent<ReportingStructure>();
+            Assert.AreEqual(4, reportingStructure?.numberOfReports);
+            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
+        }
+
         [TestMethod]
         public void UpdateEmployee_Returns_Ok()
         {
@@ -142,67 +205,6 @@ namespace code_challenge.Tests.Integration
         }
 
 
-        //base test to make sure we cover employees without reports
-        
-        [TestMethod]
-        public void getReportingStructureShould_Return_Employee_and_No_Reports()
-        {
-            var employeeId = "c0c2293d-16bd-4603-8e08-638a9d18b22c";           
-
-            // Execute
-            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
-            var response = getRequestTask.Result;
-
-            // Assert
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            var reportingStructure = response.DeserializeContent<ReportingStructure>();
-            Assert.AreEqual(0, reportingStructure?.numberOfReports);
-            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
-          
-
-        }
-        // tests bases case where no employee id is provided
-        [TestMethod]
-        public void getReportingStructureShould_Return_null()
-        {
-            string employeeId = null;
-            // Execute
-            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
-            var response = getRequestTask.Result;
-
-            // Assert
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            var reportingStructure = response.DeserializeContent<ReportingStructure>();
-            Assert.IsNull(reportingStructure);
-        }
-        // tests can't find emplloyee case where no employee id is provided
-        [TestMethod]
-        public void getReportingStructureShould_Return_null_ID_ID_Not_Found()
-        {
-            string employeeId = "AAAA";
-            // Execute
-            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
-            var response = getRequestTask.Result;
-
-            // Assert
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            var reportingStructure = response.DeserializeContent<ReportingStructure>();
-            Assert.IsNull(reportingStructure);
-        }
-        // tests for returning number of reports for a given id
-        [TestMethod]
-        public void getReportingStructureShould_Return_Number_OfReports_ForGrandChildren()
-        {
-            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
-            // Execute
-            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
-            var response = getRequestTask.Result;
-
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            var reportingStructure = response.DeserializeContent<ReportingStructure>();
-            Assert.AreEqual(4, reportingStructure?.numberOfReports);
-            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
-        }
         // //Salary and effective date are required
         [TestMethod]
         public void CreateCompensation_Required_Fields()
