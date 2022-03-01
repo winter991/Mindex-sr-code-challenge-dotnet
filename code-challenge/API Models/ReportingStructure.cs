@@ -8,9 +8,10 @@ namespace challenge.API_Models
 {
     // returns the employee and it's number of reportss
     //As this is not a DB object created a seperate folder to store api/requests and responses
+    
     public class ReportingStructure
     {
-        public Employee employee { get; set; }
+        public string employee { get; set; }
         public int numberOfReports { get; set; }
 
     }

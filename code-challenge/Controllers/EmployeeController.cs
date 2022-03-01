@@ -77,7 +77,7 @@ namespace challenge.Controllers
         [HttpPost("{id}/Compensation", Name = "CreateCompensation")]
         public IActionResult CreateCompensation(String id,[FromBody] API_Models.CreateCompensationRequest request)
         {
-            _logger.LogDebug($"Received Create Compensation get request for '{id}'");
+            _logger.LogDebug($"Received Create Compensation post request for '{id}'");
             // check model state to make sure required fields are filled in
             // createCompensationRequest has validation annotations
             //we need to check them to make sure things are corrrect before callling CreateCompensation
@@ -88,23 +88,28 @@ namespace challenge.Controllers
             var comp = _employeeService.CreateCompensation(id, request);
 
             if (comp == null)
+            {
                 return NotFound();
+            }
+            if (!String.IsNullOrEmpty(comp?.errorMessage))// something happened and the request failed, return the error message back to the user
+            {
+                return BadRequest(comp?.errorMessage);
+            }
 
             return Ok(comp);
         }
-
-        
+        //returrns commpensation info for a given employee
         [HttpGet("{id}/compensation", Name = "GetCompensation")]
         public IActionResult GetCompensation(String id)
         {
-            _logger.LogDebug($"Received getReportingStructure get request for '{id}'");
+            _logger.LogDebug($"Received GetCompensation get request for '{id}'");
 
-            var reportingStructure = _employeeService.GetCompensationByEmployeeID(id);
+            var compensation = _employeeService.GetCompensationByEmployeeID(id);
 
-            if (reportingStructure == null)
+            if (compensation == null)
                 return NotFound();
 
-            return Ok(reportingStructure);
+            return Ok(compensation);
         }
     }
 }

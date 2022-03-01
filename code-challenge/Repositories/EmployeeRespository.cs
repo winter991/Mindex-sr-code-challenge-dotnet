@@ -42,11 +42,10 @@ namespace challenge.Repositories
 
         public Employee GetById(string id)
         {
-
-            //for some reason this is not returning the employyee.DirectReports
-            //when I debug and check the results it works as expected
-            //materialize the list so that all directReports are loaded and we don't need to call getByID them when traversing the tree
-            //There is a performace hit with this as we are loading the table all at once.
+            //fixed issue where employee direct reports are not loaded when the employee is 
+            //materialize the list so that all directReports are loaded
+            // this will allow the direct reports( and the direct reports direct reports) to be loaded and returned to the calller 
+            //Depending on table size, there may be a performace hit with this as we are loading the table all at once and then pullling off the single employee.
 
             return _employeeContext.Employees.ToList().SingleOrDefault(e => e.EmployeeId == id);
            

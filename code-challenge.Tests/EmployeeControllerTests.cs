@@ -98,7 +98,8 @@ namespace code_challenge.Tests.Integration
         public void GetReportingStructureShould_Return_Employee_and_No_Reports()
         {
             var employeeId = "c0c2293d-16bd-4603-8e08-638a9d18b22c";
-
+            var expectedFirstName = "George";
+            var expectedLastName = "Harrison";
             // Execute
             var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingStructure");
             var response = getRequestTask.Result;
@@ -107,7 +108,7 @@ namespace code_challenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.AreEqual(0, reportingStructure?.numberOfReports);
-            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
+            Assert.AreEqual(expectedFirstName+ " " +expectedLastName , reportingStructure?.employee);
 
 
         }
@@ -143,6 +144,8 @@ namespace code_challenge.Tests.Integration
         [TestMethod]
         public void GetReportingStructureShould_Return_Number_OfReports_ForGrandChildren()
         {
+            var expectedFirstName = "John";
+            var expectedLastName = "Lennon";
             // for this test we want the context to be in a known good state. For this we are recreating the context
             string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
             // Execute
@@ -152,7 +155,7 @@ namespace code_challenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.AreEqual(4, reportingStructure?.numberOfReports);
-            Assert.AreEqual(employeeId, reportingStructure?.employee?.EmployeeId);
+            Assert.AreEqual(expectedFirstName + " " + expectedLastName, reportingStructure?.employee);
         }
 
         [TestMethod]
@@ -210,6 +213,9 @@ namespace code_challenge.Tests.Integration
         [TestMethod]
         public void CreateCompensation_Required_Fields()
         {
+            
+            var expectedFirstName = "John";
+            var expectedLastName = "Lennon";
             string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
             var requestContent =   new JsonSerialization().ToJson(new CreateCompensationRequest { });
             // Execute
@@ -223,22 +229,28 @@ namespace code_challenge.Tests.Integration
         [TestMethod]
         public void CreateCompensation()
         {
-            string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+
+            var expectedFirstName = "Pete";
+            var expectedLastName = "Best";
+            string employeeId = "62c1084e-6e34-4630-93fd-9153afb65309";
             var requestContent = new JsonSerialization().ToJson(new CreateCompensationRequest { Salary=500, EffectiveDate=new DateTime(2021,01,01)});
             // Execute
             var postRequestTask = _httpClient.PostAsync($"api/employee/{employeeId}/compensation", new StringContent(requestContent, Encoding.UTF8, "application/json"));
             var response = postRequestTask.Result;
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var result = response.DeserializeContent<CompensationResponse>();
-            Assert.AreEqual(500, result.Salary);
-            Assert.AreEqual(new DateTime(2021, 01, 01), result.EffectiveDate);
-            Assert.AreEqual("16a596ae-edd3-4847-99fe-c4518e82c86f", result.Employee.EmployeeId);
+            Assert.AreEqual(500, result.salary);
+            Assert.AreEqual(new DateTime(2021, 01, 01), result.effectiveDate);
+            Assert.AreEqual(expectedFirstName + " " + expectedLastName, result?.employee);
 
         }
         // create and then get the compensation we created to prove it was peristed
         [TestMethod]
         public void GetCompensation_()
         {
+
+            var expectedFirstName = "John";
+            var expectedLastName = "Lennon";
             //create
             string employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
             var requestContent = new JsonSerialization().ToJson(new CreateCompensationRequest { Salary = 500, EffectiveDate = new DateTime(2021, 01, 01) });
@@ -251,9 +263,9 @@ namespace code_challenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var result = response.DeserializeContent<CompensationResponse>();
 
-            Assert.AreEqual(500, result.Salary);
-            Assert.AreEqual(new DateTime(2021, 01, 01), result.EffectiveDate);
-            Assert.AreEqual("16a596ae-edd3-4847-99fe-c4518e82c86f", result.Employee.EmployeeId);
+            Assert.AreEqual(500, result.salary);
+            Assert.AreEqual(new DateTime(2021, 01, 01), result.effectiveDate);
+            Assert.AreEqual(expectedFirstName + " " + expectedLastName, result?.employee);
 
         }
 

@@ -20,13 +20,17 @@ namespace challenge.Services
             _logger = logger;
         }
 
-
-        public API_Models.CompensationResponse CreateCompensation (string id,CreateCompensationRequest request)
-           
+        //Creates a compensation for a given customer
+        //Takes a employee ID and the salary and effectiveDate of the compensation
+        //returns the employee,salary,effectiveDate
+        //salary and effectiveDate are required and checked by model validation attributes
+        public API_Models.CompensationResponse CreateCompensation (string id,CreateCompensationRequest request)           
         {
-            //Assumption an employee can have only one compensation. Therefore if an employee already has a compensation we will overrite it
+            // Since the response does not contain a  unique identifier for the compensation, we can assumme that there is only a single compensation
+            //Therefore if an employee already has a compensation will return an error stating that a compensation has been for this employee
+
             //handle error cases for if the request object is not provided or if the employee does not exist for the provided ID
-            if(request == null)
+            if (request == null)
             {
                 _logger.LogError("Create Compensation request object is null");
                 return null;
@@ -36,7 +40,18 @@ namespace challenge.Services
             {
                 _logger.LogError(String.Format("Could not find employee for employeeID {0}",id));
             }
-            
+            if ( _employeeRepository.GetCompensationByEmployeeID(id) != null)
+            {
+                _logger.LogError(String.Format("A compensation alrready exists for  employeeID", id));
+                //  don't throw an exception as that willl be treated a 500 internal server error
+                // this allows the user to take corrective action and fix the request
+                // in this case they would need to do an update(not implemented) of the compensation
+                var errorComp = new API_Models.CompensationResponse
+                {
+                    errorMessage = String.Format("A compensation record already exists for  employeeID", id)
+                };
+                return errorComp;
+            }
             //create new commpenation  and assign it to the emmployee. This will overrrite 
             var compensation = new Compensation
             {
@@ -52,9 +67,9 @@ namespace challenge.Services
             //Convert thhe result to the response model and send it back
             var result = new API_Models.CompensationResponse
             {
-                EffectiveDate = compensation.EffectiveDate,
-                Salary = compensation.Salary,
-                Employee = compensation.Employee
+                effectiveDate = compensation.EffectiveDate,
+                salary = compensation.Salary,
+                employee = String.Format("{0} {1}", employee.FirstName, employee.LastName),
             };
             return result;
 
@@ -70,9 +85,9 @@ namespace challenge.Services
                 {
                      result = new API_Models.CompensationResponse
                     {
-                        EffectiveDate = compensation.EffectiveDate,
-                        Salary = compensation.Salary,
-                        Employee = compensation.Employee
+                        effectiveDate = compensation.EffectiveDate,
+                        salary = compensation.Salary,
+                        employee = String.Format("{0} {1}", compensation?.Employee.FirstName, compensation?.Employee.LastName)
                     };
                 }
             }
@@ -100,27 +115,31 @@ namespace challenge.Services
 
             return null;
         }
-        //
+        // for a given employeeID determine the number of employees that report under it
+        // takes a string emplyeeID and returns the employe(first+ last)
+        // for example employeeId: 16a596ae-edd3-4847-99fe-c4518e82c86f
+        // returns employee:John Lennon, numberOfReports:4 
+        // 
         public ReportingStructure GetReportingStructureForEmployeeID(string id)
         {
-            //TODO check to see how we should handle invalid IDs/ employee not found
+            
             if (String.IsNullOrEmpty(id))
             {
                 return null; 
             }
 
-            //Get employee if not found just return null
+            //Get employee, if not found, just return null
             var employee = _employeeRepository.GetById(id);
             if(employee == null)
             {
                 return null;
             }
-            //
+            //we should already have the employee's direct reports(and their direct reports) based on the employee object structure and how the employee was loaded
             int numberOfReports = GetNumberOfReports(employee.DirectReports);
 
             return new API_Models.ReportingStructure
             {
-                employee = employee,
+                employee = String.Format("{0} {1}",employee.FirstName,employee.LastName),
                 numberOfReports = numberOfReports
             };
         }
@@ -149,25 +168,19 @@ namespace challenge.Services
 
 
         #region private methods
-        /// <summary>
-        /// Recursivly gets the number of reports for an employee by descending down it's decendants
-        /// 
-        /// 
-        /// </summary>
-        /// <param name="employees"></param>
-        /// <returns></returns>
+      
+        //Recursivly gets the number of reports for an employee by descending down it's decendants       
         private int GetNumberOfReports(IList<Employee> reports)
         {
-
             int reportCount=0;
-            if(reports == null)
+            if(reports == null)//we've reached the end of the employee reporting tree
             {
                 return reportCount;
             }
             else
             {
                 //loop over the direct reports
-                // if the direct reports do not have reports of their own we don't need to recurse and can just add to the count instead
+                // if the direct reports do not have reports of their own, we don't need to recurse and can just add to the count instead
                 foreach( var report in reports)
                 {
                     //increment the number of reports for each direct report
